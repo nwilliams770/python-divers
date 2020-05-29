@@ -1,3 +1,6 @@
+from typing import List
+import threading
+
 class Solution:
     def flipAndInvertImage(self, A: List[List[int]]) -> List[List[int]]:
         row_size = len(A[0])
@@ -37,3 +40,24 @@ class Solution:
 
     def get_inverse_idx(self, i, length):
         return length - i - 1
+
+# Concurrency Solution
+def flip_and_invert_image_with_threads(m: List[List[int]]) -> List[List[int]]:
+    threads = []
+    # for i, _ in enumerate(m):
+    for i in range(len(m)):
+        t_row = threading.Thread(target=_concurrent_reverse_invert_row, args=(m, i))
+        t_row.start()
+        threads.append(t_row)
+
+    for thread in threads:
+        thread.join()
+
+    return m
+
+def _concurrent_reverse_invert_row(m: List[List[int]], i: int):
+        m[i] = [0 if (e == 1) else 1 for e in m[i]]
+        m[i].reverse()
+
+
+
